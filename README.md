@@ -1,5 +1,12 @@
 To setup a Python 3.12 virtual environment for running tutorials
-with an Nvidia CUDA-capable card:
+with an Nvidia CUDA-capable card and then running a local
+instance of an LLM and RAG:
+
+Reference video:
+https://www.youtube.com/watch?v=Ylz779Op9Pw&t=621s
+
+Reference 'blog post:
+https://towardsdatascience.com/how-to-improve-llms-with-rag-abdc132f76ac
 
 1. sudo apt install python3.12-venv
 1. sudo ubuntu-drivers autoinstall

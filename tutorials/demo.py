@@ -34,7 +34,7 @@ print(len(documents))
 
 index = VectorStoreIndex.from_documents(documents)
 
-# set number of docs to retreive
+# set number of docs to retrieve
 top_k = 3
 
 # configure retriever
