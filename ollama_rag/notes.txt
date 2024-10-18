@@ -25,15 +25,77 @@ https://thenewstack.io/how-to-get-started-running-small-language-models-at-the-e
 
 https://www.arsturn.com/blog/running-ollama-on-nvidia-gpus-a-comprehensive-guide
 
-1. install Ollama
-1. https://github.com/ollama/ollama/tree/main/docs
+== To run ollama on a Jetson AGX Orin
 
-```
-curl -fsSL https://ollama.com/install.sh | sh
-```
+Following
+https://github.com/ollama/ollama/blob/main/docs/linux.md
 
-1. pull two models: mistral, nomic-embed-text
-1. start "ollama serve"
+1. Use the Nvidia SDK Manager, from an ubuntu 22.04 host
+    To install ubuntu 22.04 with JetPack 6.1 on the Orin Dev Kit, via
+    Force Recovery mode
+1. sudo unminimize
+1. sudo nvidia-smi -q | head -8
+    Confirm an Nvidia GPU is detected and show the CUDA version.
+1. curl -fsSL https://ollama.com/install.sh | sh
+    Should end with "NVIDIA GPU installed."
+    Installs into /usr/local/bin and systemd
+1. export OLLAMA_HOST="http://0.0.0.0:11434"
+1. /usr/local/bin/ollama serve
+    source=types.go:107 msg="inference compute"
+    id=GPU-a557a952-24cc-5291-85d9-4e7ef779a7de library=cuda
+    variant=jetpack6 compute=8.7 driver=12.6 name=Orin
+    total="30.0 GiB" available="28.4 GiB"
+
+    Environment variables are:
+    CUDA_VISIBLE_DEVICES:
+    GPU_DEVICE_ORDINAL:
+    HIP_VISIBLE_DEVICES:
+    HSA_OVERRIDE_GFX_VERSION:
+    HTTPS_PROXY:
+    HTTP_PROXY:
+    NO_PROXY:
+    OLLAMA_DEBUG:false
+    OLLAMA_FLASH_ATTENTION:false
+    OLLAMA_GPU_OVERHEAD:0
+    OLLAMA_HOST:http://0.0.0.0:11434
+    OLLAMA_INTEL_GPU:false
+    OLLAMA_KEEP_ALIVE:5m0s
+    OLLAMA_LLM_LIBRARY:
+    OLLAMA_LOAD_TIMEOUT:5m0s
+    OLLAMA_MAX_LOADED_MODELS:0
+    OLLAMA_MAX_QUEUE:512
+    OLLAMA_MODELS:/home/bill/.ollama/models
+    OLLAMA_MULTIUSER_CACHE:false
+    OLLAMA_NOHISTORY:false
+    OLLAMA_NOPRUNE:false
+    OLLAMA_NUM_PARALLEL:0
+    OLLAMA_ORIGINS:
+    OLLAMA_SCHED_SPREAD:false
+    OLLAMA_TMPDIR:
+    ROCR_VISIBLE_DEVICES:
+    http_proxy:
+    https_proxy:no_proxy:
+1. ollama -v
+    To verify the server is running and show the version (ollama
+    version is 0.3.13)
+
+And then following https://github.com/ollama/ollama
+
+1. export OLLAMA_LOAD_TIMEOUT=1m0s
+1. ollama pull llama3.2
+1. ollama run llama3.2
+    For ollama v0.3.12, v0.3.13: after about five minutes, reports
+    "gpu VRAM usage didn't recover within timeout"
+    Before the timeout, "ollama ps" reports a running model
+
+    See https://github.com/ollama/ollama/issues/7130
+
+== To build ollama on a Jetson AGX Orin
+
+https://github.com/ollama/ollama/blob/main/docs/development.md
+
+
+=== Testing the Ollama server
 
 # to embed a file
 curl --request POST --url http://localhost:8080/embed --header 'Content-Type:
@@ -43,3 +105,21 @@ Regulations_v1.0.pdf'
 # to submit a query
 curl --request POST --url http://localhost:8080/query --header 'Content-Type:
 application/json' --data '{ "query": "What is the XPRIZE?" }'
+
+
+== To run ollama on a Jetson AGX Orin as a docker container
+
+https://www.jetson-ai-lab.com/tutorial_ollama.html
+https://forums.developer.nvidia.com/t/introducing-ollama-support-for-jetson-devices/289333
+
+1. Use the Nvidia SDK Manager, from an ubuntu 22.04 host, to
+install ubuntu 22.04 with JetPack 6.1 on the Orin Dev Kit, via
+Force Recovery mode
+1. git clone https://github.com/dusty-nv/jetson-containers
+1. ./jetson-containers/install.sh
+1. sudo docker image ls
+1. jetson-containers run $(autotag ollama)
+
+The above steps result in a running container, but not in a
+working ollama server.
+

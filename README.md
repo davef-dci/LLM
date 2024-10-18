@@ -32,3 +32,8 @@ print(torch.cuda.get_device_name(0))
  do the stuff
 
 5. deactivate
+
+## Hosting Ollama on an Nvidia Jetson AGX Orin Dev Kit
+
+https://thenewstack.io/how-to-get-started-running-small-language-models-at-the-edge/
+
