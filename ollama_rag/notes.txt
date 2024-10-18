@@ -1,29 +1,70 @@
-## Using RAG with a local LLM hosted by Ollama
+== Using RAG with a local LLM hosted by Ollama
 
 https://dev.to/nassermaronie/build-your-own-rag-app-a-step-by-step-guide-to-setup-llm-locally-using-ollama-python-and-chromadb-b12
     Code at https://github.com/firstpersoncode/local-rag
-
-https://medium.com/rahasak/build-rag-application-using-a-llm-running-on-local-computer-with-ollama-and-langchain-e6513853fda0
-    Runs locally using Ollama, using Flask to create a REST API,
-    Ollama running in a Docker container, and an instance of
-    MongoDB running somewhere (but it's never actually
-    referenced).
-
-https://www.youtube.com/watch?v=ztBJqzBU5kc
-    Uses something called Streamlit, which doesn't work well
-    locally.
-
-https://www.youtube.com/watch?v=2TJxpyO3ei4&list=WL&index=7
-    Don't use, the code is haphazard and does not run
-    out-of-the-box.
-
-Use Ollama to host the model
 
 ## References
 
 https://thenewstack.io/how-to-get-started-running-small-language-models-at-the-edge/
 
+https://github.com/ollama/ollama/blob/main/docs/development.md
+
 https://www.arsturn.com/blog/running-ollama-on-nvidia-gpus-a-comprehensive-guide
+
+== To run ollama and RAG on an Nvidia GeForce 1060 6 GB
+
+  - Driver Version: 550.107.02
+  - CUDA Version: 12.4
+  - OS: ubuntu 24.04 on amd64
+
+1. install ollama
+    curl -fsSL https://ollama.com/install.sh | OLLAMA_VERSION=0.3.13 sh
+    sudo systemctl disable ollama
+2. export OLLAMA_MODELS=""
+3. python -m venv ollama_rag
+    Python 3.12.3
+4. source ollama_rag/bin/activate
+5. install modules
+    pip install \
+        chromadb \
+        unstructured 
+        langchain \
+        langchain-text-splitters \
+        "unstructured[all-docs]" \
+        python-dotenv \
+        flask
+6. install models
+    ollama pull mistral
+    ollama pull nomic-embed-text
+7. git clone https://github.com/firstpersoncode/local-rag.git
+8. cd local-rag
+9. populate .env
+    TEMP_FOLDER='/tmp/ollama'
+    CHROMA_PATH="chroma"
+    COLLECTION_NAME='local-rag'
+    LLM_MODEL='mistral'
+    TEXT_EMBEDDING_MODEL='nomic-embed-text'
+10. mv app.py local-rag.py
+11. python local-rag.py
+
+This configuration works correctly, albeit rather slow.
+
+=== Testing the Ollama server
+
+# to embed a PDF file
+curl \
+    --request POST \
+    --url http://localhost:8080/embed \
+    --header 'Content-Type: multipart/form-data' \
+    --form file='@/home/bill/Downloads/XPRIZE Rainforest Rules & Regulations_v1.0.pdf'
+
+# to submit a query
+curl \
+    --request POST \
+    --url http://localhost:8080/query \
+    --header 'Content-Type: application/json' \
+    --data '{ "query": "What is the XPRIZE?" }'
+
 
 == To run ollama on a Jetson AGX Orin
 
@@ -90,22 +131,6 @@ And then following https://github.com/ollama/ollama
 
     See https://github.com/ollama/ollama/issues/7130
 
-== To build ollama on a Jetson AGX Orin
-
-https://github.com/ollama/ollama/blob/main/docs/development.md
-
-
-=== Testing the Ollama server
-
-# to embed a file
-curl --request POST --url http://localhost:8080/embed --header 'Content-Type:
-multipart/form-data' --form file='@/home/bill/Downloads/XPRIZE Rainforest Rules &
-Regulations_v1.0.pdf'
-
-# to submit a query
-curl --request POST --url http://localhost:8080/query --header 'Content-Type:
-application/json' --data '{ "query": "What is the XPRIZE?" }'
-
 
 == To run ollama on a Jetson AGX Orin as a docker container
 
@@ -122,4 +147,20 @@ Force Recovery mode
 
 The above steps result in a running container, but not in a
 working ollama server.
+
+== Tutorials which don't work
+
+https://medium.com/rahasak/build-rag-application-using-a-llm-running-on-local-computer-with-ollama-and-langchain-e6513853fda0
+    Runs locally using Ollama, using Flask to create a REST API,
+    Ollama running in a Docker container, and an instance of
+    MongoDB running somewhere (but it's never actually
+    referenced).
+
+https://www.youtube.com/watch?v=ztBJqzBU5kc
+    Uses something called Streamlit, which doesn't work well
+    locally.
+
+https://www.youtube.com/watch?v=2TJxpyO3ei4&list=WL&index=7
+    Don't use, the code is haphazard and does not run
+    out-of-the-box.
 
