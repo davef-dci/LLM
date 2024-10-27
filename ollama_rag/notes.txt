@@ -8,6 +8,12 @@ https://dev.to/nassermaronie/build-your-own-rag-app-a-step-by-step-guide-to-setu
 https://thenewstack.io/how-to-get-started-running-small-language-models-at-the-edge/
 
 https://github.com/ollama/ollama/blob/main/docs/development.md
+    For building ollama from source, requires installing cmake
+    and golang from their respective maintainers.
+    Must also install deb packages: cuda-nvcc-12-6
+    export PATH=$PATH:/usr/local/go/bin
+    export CUDA_LIB_DIR=usr/local/cuda-12.6/targets/aarch64-linux/lib
+    export CUDACXX=/usr/local/cuda-12.6/bin/nvcc
 
 https://www.arsturn.com/blog/running-ollama-on-nvidia-gpus-a-comprehensive-guide
 
