@@ -62,7 +62,7 @@ curl \
     --request POST \
     --url http://localhost:8080/embed \
     --header 'Content-Type: multipart/form-data' \
-    --form file='@/home/bill/Downloads/XPRIZE Rainforest Rules & Regulations_v1.0.pdf'
+    --form file='@/home/bill/Downloads/pdf_to_load/'
 
 # to submit a query
 curl \
@@ -70,6 +70,11 @@ curl \
     --url http://localhost:8080/query \
     --header 'Content-Type: application/json' \
     --data '{ "query": "What is the XPRIZE?" }'
+
+# to delete everything previously embedded
+curl \
+    --request DELETE \
+    --url http://localhost:8080/delete
 
 
 == To run ollama on a Jetson AGX Orin
@@ -83,6 +88,8 @@ https://github.com/ollama/ollama/blob/main/docs/linux.md
 1. sudo unminimize
 1. sudo nvidia-smi -q | head -8
     Confirm an Nvidia GPU is detected and show the CUDA version.
+1. sudo -H pip install jetson-stats
+1. sudo jtop
 1. curl -fsSL https://ollama.com/install.sh | sh
     Should end with "NVIDIA GPU installed."
     Installs into /usr/local/bin and systemd
